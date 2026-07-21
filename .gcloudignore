@@ -1,0 +1,8 @@
+# Files not uploaded to Cloud Build. .env MUST stay local — the deployed
+# service reads GEMINI_API_KEY from Secret Manager, never from an uploaded file.
+.gcloudignore
+.git
+node_modules
+dist
+.env
+*.log
