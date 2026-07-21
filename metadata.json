@@ -1,0 +1,6 @@
+{
+  "name": "TerraCheck",
+  "description": "An environmental & planning due diligence tool for US real estate providing 90-second rapid reports across 7 critical data layers including Superfund sites, RCRA hazards, EPA facilities, USTs, flood zones, wetlands, and zoning regulations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
