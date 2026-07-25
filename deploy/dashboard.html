@@ -114,7 +114,8 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 .ftbl tr:hover td{background:var(--off)}
 .ref-code{font-family:var(--mono);font-size:10.5px;color:var(--text2);white-space:nowrap}
 .ftbl td.rat-cell{font-style:normal;color:inherit}
-.prec-cell{font-style:italic;color:var(--text3);font-size:12px;line-height:1.4}
+.prec-cell{font-style:italic;color:#4b5563;font-size:12px;line-height:1.4}
+.prec-lbl{font-style:normal;font-weight:600;color:#4b5563}
 .prec-none{color:var(--text3);font-size:11px}
 
 /* ── REVIEW SELECTOR ── */
@@ -192,7 +193,7 @@ select:focus{outline:2px solid var(--border-md);outline-offset:1px}
 .rat-more{background:none;border:none;padding:2px 0 0;font-size:10.5px;color:var(--text3);
   cursor:pointer;font-family:var(--font);display:block;margin-top:3px}
 .rat-more:hover{color:var(--text2)}
-.cmp-prec{color:var(--text3);font-size:10.5px;font-style:italic;margin-top:4px}
+.cmp-prec{color:#4b5563;font-size:10.5px;font-style:italic;margin-top:4px}
 .diff-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
   color:var(--amber);margin-left:5px;font-weight:600}
 .only-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
@@ -742,13 +743,16 @@ function handleUploadedFile(file) {
 
 // ── REVIEWS VIEW ──────────────────────────────────────────────────────────────
 
-function formatRationale(text) {
+function formatRationale(text, fallbackName) {
   if (!text) return '';
   const ci = text.indexOf(': ');
   if (ci > 0 && ci <= 40 && !/[.,]/.test(text.slice(0, ci))) {
     return `<span class="rat-lead">${esc(text.slice(0, ci + 1))}</span><span class="rat-body">${esc(text.slice(ci + 1))}</span>`;
   }
-  return `<span class="rat-body">${esc(text)}</span>`;
+  const lead = fallbackName ? `${fallbackName}:` : null;
+  return lead
+    ? `<span class="rat-lead">${esc(lead)}</span> <span class="rat-body">${esc(text)}</span>`
+    : `<span class="rat-body">${esc(text)}</span>`;
 }
 
 function renderReviews() {
@@ -801,9 +805,9 @@ function reviewCardHtml(r) {
       <td><span class="ref-code">${esc(f.ref)}</span></td>
       <td>${esc(f.issue)}</td>
       <td>${chip(f.severity)}</td>
-      <td class="rat-cell">${formatRationale(f.rationale)}</td>
+      <td class="rat-cell">${formatRationale(f.rationale, r.partner)}</td>
       <td>${prec
-        ? `<span class="prec-cell">${esc(prec)}</span>`
+        ? `<span class="prec-cell"><strong class="prec-lbl">Precedent:</strong> ${esc(prec)}</span>`
         : `<span class="prec-none">—</span>`}</td>
     </tr>`;
   }).join('');
@@ -904,13 +908,13 @@ function sideBySideHtml(L, R) {
   const rm = {}; rf.forEach(f => rm[f.ref] = f);
   const allRefs = [...new Set([...lf.map(f=>f.ref), ...rf.map(f=>f.ref)])];
 
-  const cardHtml = (f, other) => {
+  const cardHtml = (f, other, partnerName) => {
     if (!f) return `<div class="cmp-row absent">Not flagged in this review</div>`;
     const onlyMe  = !other;
     const sevDiff = other && other.severity !== f.severity;
     const cls = sevDiff ? 'diff-sev' : onlyMe ? 'only-me' : '';
     const prec = derivePrecedent(f);
-    const ratHtml = formatRationale(f.rationale);
+    const ratHtml = formatRationale(f.rationale, partnerName);
     const ratBlock = f.rationale && f.rationale.length > 180
       ? `<div class="cmp-rat rat-clamped">${ratHtml}</div><button class="rat-more" type="button">more ↓</button>`
       : `<div class="cmp-rat">${ratHtml}</div>`;
@@ -923,13 +927,13 @@ function sideBySideHtml(L, R) {
       </div>
       <div class="cmp-iss">${esc(f.issue)}</div>
       ${ratBlock}
-      ${prec ? `<div class="cmp-prec">${esc(prec)}</div>` : ''}
+      ${prec ? `<div class="cmp-prec"><strong class="prec-lbl">Precedent:</strong> ${esc(prec)}</div>` : ''}
     </div>`;
   };
 
   const pairRows = allRefs.map(ref => {
     const pairCls = (lm[ref] && rm[ref] && lm[ref].severity !== rm[ref].severity) ? 'diff-sev' : '';
-    return `<div class="cmp-pair ${pairCls}">${cardHtml(lm[ref], rm[ref])}${cardHtml(rm[ref], lm[ref])}</div>`;
+    return `<div class="cmp-pair ${pairCls}">${cardHtml(lm[ref], rm[ref], L.partner)}${cardHtml(rm[ref], lm[ref], R.partner)}</div>`;
   }).join('');
 
   const diffCount = allRefs.filter(ref => {
