@@ -1,0 +1,80 @@
+{
+  "doc": "prelim_title_report.md",
+  "doc_type": "preliminary_title_report",
+  "matter": "Folsom-St-2026-SL",
+  "partner": "Sarah Lin",
+  "client": "Bayline Development LLC",
+  "date": "2026-07-25",
+  "findings": [
+    {
+      "ref": "Sched B, Exc. 1",
+      "issue": "General and special taxes FY2026-27 not yet due; FY2025-26 both installments PAID; no Mello-Roos of record.",
+      "severity": "GREEN",
+      "rationale": "No open tax lien. Standard exception.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 2",
+      "issue": "Supplemental tax boilerplate.",
+      "severity": "GREEN",
+      "rationale": "Standard exception; no action required.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 3",
+      "issue": "Unreleased deed of trust ($485,000; dated 09/22/2009; recorded 10/03/2009 as Series 2009-I419027). Beneficiary Pacific Rim Savings Bank, FSB closed by FDIC 03/04/2011. Successor in interest NOT reflected in chain of title. No reconveyance of record. Full reconveyance, substitution of trustee, or payoff demand from FDIC as receiver required before title insurable.",
+      "severity": "RED",
+      "rationale": "Uncleared monetary encumbrance; title uninsurable until cleared. Sarah Lin: always RED; requires payoff demand or recorded reconveyance before COE. Bayline deal-breaker: monetary liens cannot carry into title. Identical FDIC-receiver fact pattern to Mission-St-2025-SL precedent.",
+      "precedent": "Mission-St-2025-SL Exc. 4: FDIC payoff demand obtained; 110% escrow holdback established pending recordation of reconveyance; reconveyance recorded; exception cleared; policy issued without exception."
+    },
+    {
+      "ref": "Sched B, Exc. 4",
+      "issue": "Active SFPUC sewer easement (8-ft wide; recorded 06/07/1971, Book D-912, Page 441). Survey SFM-2026-0341 (LS Brunetti, 07/09/2026) locates easement centerline beneath NE building foundation corner. Easement width (~4 ft each side of centerline) encroaches approx. 2.3 ft into building envelope at foundation corner. 36-inch combined sewer main confirmed active by SFPUC. No encroachment permit of record. ALTA extended coverage BLOCKED: title officer requires SFPUC encroachment agreement and senior underwriting endorsement before ALTA issuable.",
+      "severity": "RED",
+      "rationale": "Easement located on survey but location reveals structural encroachment into building foundation. Sarah Lin: (1) all survey/easement exceptions RED until physically located on survey AND all title issues resolved — threshold met on location, not on resolution; (2) ALTA extended coverage required (non-negotiable) — ALTA currently unissuable without SFPUC encroachment agreement. Bayline accepts physical easement risk generally, but Lin's hard ALTA requirement is independent and overrides. Deal cannot proceed to close without SFPUC agreement and senior underwriting sign-off.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 5",
+      "issue": "CC&Rs (recorded 08/14/1947, Book 3341, Page 88; amended 11/02/1988, Series 1988-H302741). §4.2 rental cap: max 1 unit may be rented; one unit must be owner-occupied; LLC buyer cannot owner-occupy; $500/mo LD per violation, enforceable by owners of Block 4027 Lots 16-22. §4.5 alteration restriction: majority consent of Lots 16-22 owners required for structural alterations. Runs to 08/14/2047.",
+      "severity": "AMBER",
+      "rationale": "Bayline client profile: accepts CC&R risk including rental caps, subject to counsel review. §4.2 directly conflicts with LLC buyer structure — no natural person available to satisfy owner-occupancy requirement; full rental income from both units potentially at risk. §4.5 may impede planned development alterations. Enforceability under Civil Code §714.7 (Nahrstedt line) unresolved. Counsel opinion on enforceability required before COE.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 6",
+      "issue": "Active mechanics' lien: Bay Area Masonry & Structural Repair Inc. v. Dmitri A. Volkov; $38,750; foundation crack remediation and tuck-pointing rear elevation; work commenced 02/10/2026; recorded 05/29/2026 (Series 2026-F118843). 90-day enforcement window (CCP §8460) expires approx. 08/27/2026. No action filed as of report date (07/18/2026). Release or 1.5× surety bond ($58,125) required before title insurable.",
+      "severity": "RED",
+      "rationale": "Sarah Lin: uncleared mechanics' liens always RED; recorded release or surety bond (Civ. Code §8424; 1.5× lien = $58,125) required before COE — non-negotiable. Bayline deal-breaker: monetary liens cannot carry into title. Active enforcement window adds urgency.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 7",
+      "issue": "SF Rent Ordinance (Admin. Code Ch. 37) informational notice. Not an exception to title.",
+      "severity": "GREEN",
+      "rationale": "Informational notice only; no title impact. Protected tenancy details (Unit 2, Raymond T. Castellanos, 2003) are not matters of public record and are addressed in the purchase agreement review.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 8",
+      "issue": "Rights of parties in possession not shown by public records. Two residential tenancies disclosed by seller; terms off-record.",
+      "severity": "AMBER",
+      "rationale": "Standard CLTA Schedule B exception. Covered under ALTA extended coverage (required by Sarah Lin; see Exc. 4 RED flag — ALTA currently blocked). Unit 2 long-term rent-ordinance-protected tenancy addressed in PA review.",
+      "precedent": ""
+    },
+    {
+      "ref": "Info Note A",
+      "issue": "Seismic Hazard Zone — Liquefaction designation per Seismic Hazard Mapping Act (PRC §§2690-2699.6). Mandatory NHD disclosure (Civ. Code §1103). 1924 construction.",
+      "severity": "AMBER",
+      "rationale": "Mandatory statutory disclosure. 1924 structure on liquefaction-designated lot; structural risk compounded by active sewer easement encroachment at foundation corner (Exc. 4). Seismic/structural engineering assessment recommended before COE.",
+      "precedent": ""
+    },
+    {
+      "ref": "Info Note B",
+      "issue": "1924 construction; no Certificate of Final Completion for any post-1980 work per SF Planning Dept records. DBI permit history not yet reviewed.",
+      "severity": "AMBER",
+      "rationale": "Pre-1980 structure with no post-1980 CFC. Seller has disclosed an unpermitted rear addition (approx. 110 sq ft + 180 sq ft deck) constructed ~2018 with no DBI permit or inspection (PA §3.C). Full DBI permit history pull required before COE to scope legalization cost and NOV risk.",
+      "precedent": ""
+    }
+  ]
+}

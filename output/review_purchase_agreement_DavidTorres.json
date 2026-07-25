@@ -1,0 +1,87 @@
+{
+  "doc": "purchase_agreement.md",
+  "doc_type": "purchase_agreement",
+  "matter": "Folsom-St-2026-DT",
+  "partner": "David Torres",
+  "client": "Bayline Development LLC",
+  "date": "2026-07-25",
+  "findings": [
+    {
+      "ref": "§3.A",
+      "issue": "TDS (dated 07/11/2026) and SPQ delivered by Seller within required period.",
+      "severity": "GREEN",
+      "rationale": "Standard disclosure obligation met.",
+      "precedent": ""
+    },
+    {
+      "ref": "§3.B",
+      "issue": "NHD Report No. NHD-2026-SF-44219 delivered; Seismic Hazard Zone — Liquefaction designation acknowledged and accepted by Buyer.",
+      "severity": "GREEN",
+      "rationale": "Mandatory statutory disclosure satisfied.",
+      "precedent": ""
+    },
+    {
+      "ref": "§3.C",
+      "issue": "Unpermitted rear addition: ~110 sq ft mudroom/utility room + ~180 sq ft elevated wood-frame deck (Unit 2, second floor), constructed ~2018 by prior owners. No building permit, no DBI inspection, no Certificate of Final Completion. Sold as-is; Buyer waives all post-close claims. Risk: Notice of Violation, mandatory demolition order, or full legalization cost — entirely unscoped.",
+      "severity": "AMBER",
+      "rationale": "The as-is clause is a recognized commercial term. However, this finding's severity is substantially elevated by the 10-day inspection contingency (§14.B, flagged RED below): responsible assessment of unpermitted 2018 construction on a 1924 building — including DBI permit history, NOV search, structural review of the elevated wood-frame deck, and legalization cost estimate — cannot realistically be completed in 10 calendar days. The as-is clause removes all recourse after close. DBI permit history pull and written legalization or demolition estimate must occur within the inspection period.",
+      "precedent": "Folsom-St-2026-DT Info Note B (prelim: 1924 structure, no post-1980 CFC — context confirmed)."
+    },
+    {
+      "ref": "§4.B",
+      "issue": "Unit 2: Raymond T. Castellanos; SF Rent Ordinance protected tenancy (Admin. Code Ch. 37); continuous occupancy since March 2003 (23+ years); current rent $1,340/mo (lawful base rent as adjusted); Seller has not served any notice to quit; tenant has not agreed to vacate; no estoppel certificate delivered; no vacancy plan in the agreement. OMI relocation exposure: $7,942/eligible occupant + $3,971/additional occupant (current SFRA schedule). Buyer is an LLC and cannot use OMI — owner move-in requires a natural person.",
+      "severity": "RED",
+      "rationale": "Torres hard rule: protected tenancies are RED until (1) estoppel certificate obtained confirming no claims against landlord AND (2) a credible vacancy plan is documented — OMI eviction with funded relocation assistance reserve, Ellis Act withdrawal analysis with timeline, or a negotiated buyout supported by a written offer and price credit. Bayline deal-breaker: protected tenancy without documented plan. Important structural note: LLC buyer CANNOT use owner move-in (OMI) eviction (Rent Ordinance §37.9(a)(8) requires a natural person). This limits Bayline's options to Ellis Act withdrawal or a negotiated buyout. Ellis Act carries a 1-year notice requirement and permanent withdrawal from the rental market. Recommend immediate analysis of the buyout path as the most commercially practical route.",
+      "precedent": "Valencia-St-2025-DT: 27-year protected tenant — resolved via $95,000 price credit (direct buyout $65K + legal/contingency reserve $30K) + tenant LOI to vacate within 120 days of COE + estoppel certificate. Downgraded to AMBER. Castellanos (23 years) warrants similar or greater credit given relocation exposure."
+    },
+    {
+      "ref": "§4.C",
+      "issue": "Estoppel obligation: Seller to use 'commercially reasonable efforts' to deliver estoppel certificate no later than 5 days before close of inspection period. Failure to deliver estoppel is expressly NOT a contingency failure. Buyer's sole remedy is disapproval under §14.B.",
+      "severity": "RED",
+      "rationale": "This clause has been drafted to allow Seller to fail to deliver the estoppel certificate without the deal falling apart. 'Commercially reasonable efforts' is a low bar, and the non-condition structure means Seller can cite 'tenant non-cooperation' and walk away from the obligation. Torres requires a hard estoppel condition. Amendment required: either (a) delivery of an estoppel certificate in form and substance reasonably satisfactory to Buyer is made a condition precedent to COE, or (b) failure to deliver within the specified period gives Buyer an independent, unconditional right to cancel and recover all deposits. As written, §4.C effectively defeats the purpose of requiring an estoppel.",
+      "precedent": ""
+    },
+    {
+      "ref": "§5.C",
+      "issue": "Seller expressly refuses to provide ALTA extended coverage owner's policy. Seller's obligation limited to CLTA standard coverage. Buyer bears cost of any ALTA policy desired.",
+      "severity": "GREEN",
+      "rationale": "Torres does not require ALTA extended coverage as a condition. Seller providing CLTA standard coverage meets the minimum standard for Torres. Buyer may obtain ALTA at its own expense (noting the title company has conditioned ALTA issuance on an SFPUC encroachment agreement for the sewer easement). This is not a blocking issue. KEY DIVERGENCE: Sarah Lin flags this RED — Torres does not.",
+      "precedent": ""
+    },
+    {
+      "ref": "§5.D (Exc. 3)",
+      "issue": "Seller represents DOT ($485,000; Pacific Rim Savings Bank FSB; Series 2009-I419027) has been paid in full; full reconveyance to be obtained before COE.",
+      "severity": "AMBER",
+      "rationale": "Seller's representation noted but not yet performed. Pacific Rim Savings Bank FSB was closed by FDIC in 2011; successor in interest not in chain of title. Written payoff confirmation from FDIC or its assignee required before title contingency waiver. Must be documented and confirmed before waiving Exc. 3 title objection.",
+      "precedent": "Folsom-St-2026-DT Exc. 3 (prelim — RED); Mission-St-2025-SL: FDIC payoff demand + 110% escrow holdback + recorded reconveyance applied."
+    },
+    {
+      "ref": "§5.D (Exc. 6)",
+      "issue": "Seller to provide release or bond for mechanics' lien ($38,750; Bay Area Masonry; Series 2026-F118843) prior to COE, or credit Buyer $58,125 (1.5× lien) against purchase price at COE. 90-day enforcement window expires ~08/27/2026.",
+      "severity": "AMBER",
+      "rationale": "Commitment made; not yet performed. The enforcement window (~08/27/2026) closes two days before COE — lien release or bond must be confirmed before contingency waiver, not simply committed to by COE. If active lien enforcement occurs before release or bond is recorded, this reverts to RED.",
+      "precedent": "Folsom-St-2026-DT Exc. 6 (prelim — RED)."
+    },
+    {
+      "ref": "§14.B",
+      "issue": "Inspection contingency period: 10 calendar days from Acceptance on a 1924-built (pre-1980) San Francisco multi-unit building. Buyer's own counsel note in the document acknowledges the timeline is 'aggressive' and recommends seeking extension to minimum 17 days.",
+      "severity": "RED",
+      "rationale": "Torres's hard floor: any inspection contingency under 17 calendar days on a pre-1980 SF building is RED — non-negotiable. This is a 1924 structure (102 years old). The required inspection scope within 10 days includes: (1) general property inspection; (2) environmental survey — asbestos is probable in plaster, floor tiles, and pipe insulation; lead paint is probable in all pre-1978 painted surfaces; (3) DBI permit history pull for the unpermitted rear addition (§3.C); (4) structural/seismic assessment in a designated liquefaction zone; (5) review and negotiation of estoppel certificate (§4.C); (6) review of FDIC-receiver DOT documents (§5.D). None of these can be responsibly completed in 10 calendar days. Minimum negotiating position: 17 calendar days (matching Torres's hard floor). Recommended position: 21 calendar days, which is standard for a multi-unit income property with complex title issues.",
+      "precedent": ""
+    },
+    {
+      "ref": "§14.D",
+      "issue": "Liquidated damages: $65,000 initial deposit retained by Seller upon Buyer default. LD equals approximately 3.02% of purchase price ($2,150,000). Civil Code §1675(c) creates a rebuttable presumption of invalidity for LD exceeding 3% of purchase price.",
+      "severity": "AMBER",
+      "rationale": "The LD amount sits marginally above the §1675(c) safe harbor threshold. Above 3%, California courts treat the LD as rebuttably invalid, requiring Seller to demonstrate the amount was a reasonable estimate of damages at the time of contracting — this creates unnecessary litigation risk if Buyer defaults. Recommend reducing the LD to exactly $64,500 (3.00% of $2,150,000) to secure the statutory presumption of validity. The $500 difference carries no commercial significance but eliminates meaningful legal risk.",
+      "precedent": ""
+    },
+    {
+      "ref": "§15.B",
+      "issue": "Seller represents no security deposit is held for Unit 2 (Raymond T. Castellanos; 23-year protected tenancy at $1,340/mo).",
+      "severity": "AMBER",
+      "rationale": "A 23-year rent-stabilized tenancy with no security deposit on file is unusual and warrants verification. During the inspection period: (1) confirm directly with Castellanos whether any security deposit was ever collected and what happened to it; (2) investigate whether any deferred maintenance, habitability claims, or other credits against the Seller could survive the change in ownership and complicate Bayline's position.",
+      "precedent": ""
+    }
+  ]
+}

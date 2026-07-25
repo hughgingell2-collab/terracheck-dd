@@ -1,0 +1,80 @@
+{
+  "doc": "prelim_title_report.md",
+  "doc_type": "preliminary_title_report",
+  "matter": "Folsom-St-2026-DT",
+  "partner": "David Torres",
+  "client": "Bayline Development LLC",
+  "date": "2026-07-25",
+  "findings": [
+    {
+      "ref": "Sched B, Exc. 1",
+      "issue": "General and special taxes FY2026-27 not yet due; FY2025-26 both installments PAID; no Mello-Roos of record.",
+      "severity": "GREEN",
+      "rationale": "No open tax lien. Standard exception.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 2",
+      "issue": "Supplemental tax boilerplate.",
+      "severity": "GREEN",
+      "rationale": "Standard exception; no action required.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 3",
+      "issue": "Unreleased deed of trust ($485,000; dated 09/22/2009; recorded 10/03/2009). Beneficiary Pacific Rim Savings Bank, FSB closed by FDIC 03/04/2011. Successor in interest NOT reflected in chain of title. No reconveyance of record. Full reconveyance, substitution of trustee, or payoff demand from FDIC as receiver required before title is insurable.",
+      "severity": "RED",
+      "rationale": "Not a standard Schedule B exception — this is an active monetary encumbrance that prevents insurable title. Even with Torres's flexible approach to Schedule B, there is no identified party from whom a routine payoff or reconveyance can be obtained. The FDIC receivership gap creates genuine title risk. Bayline deal-breaker: monetary liens cannot carry into title.",
+      "precedent": "Folsom-St-2026-SL Exc. 3 (Sarah Lin same document, same finding — RED). Mission-St-2025-SL: FDIC payoff demand + 110% escrow holdback + recorded reconveyance applied."
+    },
+    {
+      "ref": "Sched B, Exc. 4",
+      "issue": "Active SFPUC sewer easement (8-ft wide; recorded 06/07/1971). Survey SFM-2026-0341 (LS Brunetti, 07/09/2026) locates easement centerline beneath NE building foundation corner; ~2.3 ft encroachment into building envelope at foundation corner. 36-inch combined sewer main confirmed active by SFPUC. No encroachment permit of record. ALTA extended coverage blocked by title company pending SFPUC encroachment agreement and senior underwriting endorsement.",
+      "severity": "AMBER",
+      "rationale": "Easement is located on survey — Torres's threshold is met. Torres does not require ALTA extended coverage, so the title company's ALTA blockage is not independently a RED finding for Torres. Bayline explicitly accepts active sewer/utility easement risk without requiring cure. The ~2.3 ft physical encroachment into the building foundation warrants disclosure, an SFPUC encroachment assessment, and a structural engineer's opinion on foundation integrity — but is acceptable at AMBER given Bayline's risk tolerance. KEY DIVERGENCE: Sarah Lin flagged this RED due to ALTA blockage — that rule does not apply to Torres.",
+      "precedent": "Folsom-St-2026-SL Exc. 4 (Sarah Lin: RED due to ALTA blockage — ALTA requirement does not apply to Torres/Bayline)."
+    },
+    {
+      "ref": "Sched B, Exc. 5",
+      "issue": "CC&Rs (recorded 08/14/1947, amended 11/02/1988). §4.2 rental cap: max 1 unit rentable; one unit must be owner-occupied; LLC buyer cannot owner-occupy; $500/mo LD per violation enforceable by Block 4027 Lots 16-22 owners. §4.5 alteration restriction: majority neighbor consent required for structural alterations. Runs to 08/14/2047.",
+      "severity": "AMBER",
+      "rationale": "Bayline accepts CC&R risk including rental caps and use restrictions, subject to counsel review. §4.2 directly conflicts with LLC buyer structure — no natural person available to satisfy owner-occupancy requirement; full rental income from both units potentially at risk. §4.5 may impede redevelopment work. Counsel opinion on enforceability under Civil Code §714.7 required before COE.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 6",
+      "issue": "Active mechanics' lien: Bay Area Masonry & Structural Repair Inc. v. Dmitri A. Volkov; $38,750; foundation work; recorded 05/29/2026 (Series 2026-F118843). 90-day enforcement window (CCP §8460) expires approx. 08/27/2026. No action on file as of report date. Release or 1.5x bond ($58,125) required.",
+      "severity": "RED",
+      "rationale": "Bayline deal-breaker: uncleared monetary liens cannot carry into title. Seller has committed in PA §5.D.6 to provide release, bond, or $58,125 purchase price credit — that commitment is noted but not yet performed. The enforcement window (~08/27/2026) closes two days before the scheduled COE (08/29/2026), creating timing urgency.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 7",
+      "issue": "SF Rent Ordinance (Admin. Code Ch. 37) informational notice. Not an exception to title. Note: property records disclose Unit 2 tenant Raymond T. Castellanos, move-in March 2003 (23+ years), confirmed rent-ordinance-protected.",
+      "severity": "AMBER",
+      "rationale": "Torres's protective clause is triggered by this disclosure: a protected tenancy with 23+ years of occupancy has been identified. No estoppel certificate is referenced in the title report. This finding establishes the factual basis for a full RED treatment in the purchase agreement review. Bayline deal-breaker: protected tenancy without documented vacancy plan.",
+      "precedent": ""
+    },
+    {
+      "ref": "Sched B, Exc. 8",
+      "issue": "Rights of parties in possession not shown by public records; two residential tenancies disclosed by seller; terms off-record.",
+      "severity": "AMBER",
+      "rationale": "Standard Schedule B exception under CLTA. Torres accepts standard exceptions AMBER with disclosure. Cross-references Exc. 7: Unit 2 (Castellanos) is a confirmed rent-ordinance-protected tenancy. Estoppel certificate and vacancy plan required in PA review before this risk is acceptable to Torres.",
+      "precedent": ""
+    },
+    {
+      "ref": "Info Note A",
+      "issue": "Seismic Hazard Zone — Liquefaction designation (PRC §§2690-2699.6). Mandatory NHD disclosure (Civ. Code §1103). 1924 construction.",
+      "severity": "AMBER",
+      "rationale": "Mandatory statutory disclosure. A 1924 structure in a liquefaction zone carries inherent seismic risk. The active sewer main encroachment at the building foundation (Exc. 4) compounds the structural exposure. Seismic/structural engineering assessment recommended before COE.",
+      "precedent": ""
+    },
+    {
+      "ref": "Info Note B",
+      "issue": "1924 construction; no Certificate of Final Completion for any post-1980 work per SF Planning Dept records. DBI permit history not yet reviewed.",
+      "severity": "AMBER",
+      "rationale": "Pre-1980 structure. DBI permit history pull required — particularly in light of the unpermitted rear addition disclosed in the PA (approx. 110 sq ft + 180 sq ft deck, constructed ~2018 with no permit). This finding establishes the factual predicate for Torres's 17-day inspection contingency hard floor: the property is pre-1980 and the inspection scope is substantial. The 10-day inspection contingency in PA §14.B will be flagged RED.",
+      "precedent": ""
+    }
+  ]
+}

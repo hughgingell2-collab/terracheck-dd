@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TerraCheck DD</title>
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --white:#ffffff;
+  --off:#fafafa;
+  --subtle:#f5f5f5;
+  --border:#e5e7eb;
+  --border-md:#d1d5db;
+  --text:#111827;
+  --text2:#4b5563;
+  --text3:#9ca3af;
+  --label:#6b7280;
+  --rat:#b45309;
+
+  /* Severity — outlined pills, the ONLY color on the page */
+  --red:    #9b1c1c;
+  --red-b:  #fca5a5;
+  --amber:  #78350f;
+  --amb-b:  #d97706;
+  --green:  #064e3b;
+  --grn-b:  #6ee7b7;
+
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --serif:Georgia,'Times New Roman',Times,serif;
+  --mono:'SFMono-Regular','Cascadia Code','Consolas','Courier New',monospace;
+}
+
+/* ── BASE ── */
+body{font-family:var(--font);background:var(--white);color:var(--text);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── HEADER ── */
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:16px 36px;display:flex;align-items:baseline;
+  justify-content:space-between;gap:20px
+}
+.brand{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.brand-name{font-family:var(--serif);font-size:17px;font-weight:normal;
+  letter-spacing:.01em;color:var(--text)}
+.brand-sep{color:var(--border-md);font-family:var(--serif);font-size:15px}
+.brand-tag{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--text2)}
+.hdr-count{font-size:11px;color:var(--text3);font-variant:small-caps;
+  letter-spacing:.06em;white-space:nowrap}
+
+/* ── NAV ── */
+.nav{background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 36px;display:flex}
+.tab{padding:11px 18px;font-size:12.5px;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;user-select:none;
+  transition:color .1s,border-color .1s;letter-spacing:.01em}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--text);border-bottom-color:var(--text)}
+
+/* ── MAIN ── */
+.main{max-width:1200px;margin:0 auto;padding:36px 36px}
+
+/* ── VIEWS ── */
+.view{display:none}
+.view.on{display:block}
+
+/* ── SMALL-CAPS LABEL ── */
+.lbl{font-size:10px;font-variant:small-caps;letter-spacing:.07em;
+  color:var(--label);text-transform:uppercase;font-weight:500}
+
+/* ── SECTION HEADING ── */
+.sec-hd{font-family:var(--serif);font-size:15px;font-weight:normal;
+  color:var(--text);margin-bottom:20px;padding-bottom:12px;
+  border-bottom:1px solid var(--border)}
+
+/* ── CHIPS ── */
+.chip{display:inline-block;padding:2px 7px;border-radius:3px;
+  font-size:9.5px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;border:1px solid;white-space:nowrap}
+.chip-RED  {color:var(--red);  border-color:var(--red-b)}
+.chip-AMBER{color:var(--amber);border-color:var(--amb-b)}
+.chip-GREEN{color:var(--green);border-color:var(--grn-b)}
+
+.sum-chip{display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid}
+.sum-chip-RED  {color:var(--red);  border-color:var(--red-b)}
+.sum-chip-AMBER{color:var(--amber);border-color:var(--amb-b)}
+.sum-chip-GREEN{color:var(--green);border-color:var(--grn-b)}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* ── CARD ── */
+.card{border:1px solid var(--border);border-radius:5px;margin-bottom:18px;overflow:hidden}
+.card-hdr{padding:14px 20px;border-bottom:1px solid var(--border);
+  background:var(--off);display:flex;align-items:flex-start;
+  justify-content:space-between;flex-wrap:wrap;gap:10px}
+.card-title{font-family:var(--serif);font-size:14px;font-weight:normal;
+  color:var(--text);margin-bottom:5px}
+.meta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:2px}
+.meta{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--text2)}
+
+/* ── FINDINGS TABLE ── */
+.ftbl{width:100%;border-collapse:collapse}
+.ftbl th{padding:8px 14px;text-align:left;font-size:9.5px;
+  font-variant:small-caps;letter-spacing:.07em;color:var(--label);
+  background:var(--subtle);border-bottom:1px solid var(--border);font-weight:500}
+.ftbl td{padding:11px 14px;border-bottom:1px solid var(--border);
+  vertical-align:top;font-size:12.5px;color:var(--text);line-height:1.45}
+.ftbl tr:last-child td{border-bottom:none}
+.ftbl tr:hover td{background:var(--off)}
+.ref-code{font-family:var(--mono);font-size:10.5px;color:var(--text2);white-space:nowrap}
+.ftbl td.rat-cell{color:var(--rat);font-style:italic}
+.prec-cell{font-style:italic;color:var(--text3);font-size:12px;line-height:1.4}
+.prec-none{color:var(--text3);font-size:11px}
+
+/* ── REVIEW SELECTOR ── */
+.rev-sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.rev-btn{padding:5px 14px;border:1px solid var(--border-md);border-radius:4px;
+  background:var(--white);color:var(--text2);font-size:12px;
+  font-family:var(--font);cursor:pointer;transition:all .1s}
+.rev-btn:hover{border-color:var(--text);color:var(--text)}
+.rev-btn.on{border-color:var(--text);color:var(--text);background:var(--subtle)}
+
+/* ── SELECTS ── */
+select{background:var(--white);border:1px solid var(--border-md);
+  border-radius:4px;color:var(--text);padding:7px 28px 7px 10px;
+  font-size:13px;font-family:var(--font);cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;min-width:250px}
+select:focus{outline:2px solid var(--border-md);outline-offset:1px}
+
+/* ── NEW REVIEW ── */
+.nr-wrap{max-width:500px}
+.form-field{margin-bottom:18px}
+.form-lbl{display:block;margin-bottom:7px}
+.run-btn{padding:9px 28px;background:var(--text);color:var(--white);
+  border:none;border-radius:4px;font-size:13px;font-family:var(--font);
+  cursor:pointer;letter-spacing:.02em;margin-top:2px;transition:opacity .1s}
+.run-btn:hover{opacity:.82}
+.run-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* progress */
+.prog-wrap{margin-top:28px;border-top:1px solid var(--border);
+  padding-top:22px;display:none}
+.prog-step{display:flex;align-items:center;gap:13px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(5px);transition:opacity .22s,transform .22s}
+.prog-step:last-child{border-bottom:none}
+.prog-step.vis{opacity:1;transform:translateY(0)}
+.s-icon{font-size:12px;width:16px;text-align:center;
+  color:var(--text3);flex-shrink:0;font-family:var(--mono)}
+.s-icon.done{color:var(--green)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.s-icon.pulsing{animation:blink .7s ease-in-out infinite}
+.s-txt{font-size:13px;color:var(--text2)}
+.s-txt.done{color:var(--text3)}
+
+/* no-review notice */
+.nr-notice{margin-top:20px;padding:14px 18px;border:1px solid var(--border);
+  border-radius:4px;background:var(--off);display:none}
+.nr-notice-ttl{font-family:var(--serif);font-size:14px;color:var(--text2);margin-bottom:5px}
+.nr-notice-sub{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* ── COMPARE ── */
+.cmp-ctrl{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap;
+  margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.cmp-field{}
+.cmp-hdr-row{display:grid;grid-template-columns:1fr 1fr}
+.cmp-col-hdr{padding:12px 15px;border:1px solid var(--border);border-bottom:none;
+  border-radius:5px 5px 0 0;background:var(--off)}
+.cmp-col-hdr:last-child{border-left:none}
+.cmp-col-name{font-family:var(--serif);font-size:13px;color:var(--text);margin-bottom:4px}
+.cmp-col-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.cmp-pairs{border:1px solid var(--border);border-radius:0 0 5px 5px;overflow:hidden}
+.cmp-pair{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;border-bottom:1px solid var(--border)}
+.cmp-pair:last-child{border-bottom:none}
+.cmp-pair>.cmp-row:first-child{border-right:1px solid var(--border)}
+.cmp-row{padding:11px 14px;font-size:12px}
+.cmp-row.diff-sev{background:#fff7f7;border-left:2px solid var(--red-b)}
+.cmp-row.only-me{background:var(--off);border-left:2px solid var(--border-md)}
+.cmp-row.absent{opacity:.25;font-style:italic;color:var(--text3);
+  padding:9px 14px;font-size:11px;display:flex;align-items:center}
+.cmp-ref{font-family:var(--mono);font-size:10px;color:var(--text3);display:block;margin-bottom:4px}
+.cmp-iss{color:var(--text);line-height:1.4;margin-bottom:3px}
+.cmp-rat{color:var(--rat);font-style:italic;font-size:11px;margin-top:3px;line-height:1.4}
+.cmp-prec{color:var(--text3);font-size:10.5px;font-style:italic;margin-top:4px}
+.diff-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
+  color:var(--red);margin-left:5px}
+.only-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
+  color:var(--text3);margin-left:5px}
+.cmp-stats{font-size:12px;color:var(--text2);margin-bottom:16px}
+.cmp-legend{display:flex;gap:20px;font-size:11px;color:var(--text3);
+  margin-top:12px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:7px}
+.leg-line{width:16px;height:3px;border-radius:2px}
+
+/* ── MEMORY ── */
+.mem-sec{margin-bottom:36px}
+.mem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.mem-card{border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.mem-card-hdr{padding:13px 16px;border-bottom:1px solid var(--border);background:var(--off)}
+.mem-card-name{font-family:var(--serif);font-size:14px;font-weight:normal;
+  color:var(--text);margin-bottom:3px}
+.mem-card-type{font-size:10px;font-variant:small-caps;letter-spacing:.06em;
+  color:var(--text3);display:flex;align-items:center;gap:6px}
+.mem-card-body{padding:14px 16px}
+.mem-item{margin-bottom:13px}
+.mem-item:last-child{margin-bottom:0}
+.mem-lbl{font-size:10px;font-variant:small-caps;letter-spacing:.07em;
+  color:var(--label);margin-bottom:6px}
+.clause{padding:7px 10px;border:1px solid var(--border);border-left-width:3px;
+  border-radius:4px;margin-bottom:5px}
+.clause.RED  {border-left-color:var(--red-b)}
+.clause.AMBER{border-left-color:var(--amb-b)}
+.clause.GREEN{border-left-color:var(--grn-b)}
+.cl-name{font-size:12px;font-weight:500;color:var(--text)}
+.cl-stance{font-size:11px;color:var(--text2);margin-top:2px}
+.cl-habit{font-size:10px;color:var(--text3);margin-top:3px;
+  display:flex;align-items:center;gap:5px}
+.dbk{display:flex;gap:7px;align-items:flex-start;padding:6px 10px;
+  border:1px solid var(--red-b);border-radius:4px;
+  font-size:11.5px;color:var(--red);margin-bottom:5px}
+.ok{display:flex;gap:7px;align-items:flex-start;padding:6px 10px;
+  border:1px solid var(--border);border-radius:4px;
+  font-size:11.5px;color:var(--text2);margin-bottom:5px}
+.app-badge{display:inline-block;padding:2px 9px;border-radius:3px;
+  font-size:11px;font-weight:500;border:1px solid}
+.app-aggressive{color:var(--red);border-color:var(--red-b)}
+.app-moderate  {color:var(--amber);border-color:var(--amb-b)}
+.app-conservative{color:var(--green);border-color:var(--grn-b)}
+.memhub-pill{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;
+  border:1px solid var(--border-md);border-radius:9px;
+  font-size:9px;color:var(--text3);font-variant:small-caps;letter-spacing:.04em}
+
+/* record table */
+.rtbl{width:100%;border-collapse:collapse}
+.rtbl th{padding:8px 13px;text-align:left;font-size:9.5px;font-variant:small-caps;
+  letter-spacing:.07em;color:var(--label);background:var(--subtle);
+  border-bottom:1px solid var(--border);font-weight:500}
+.rtbl td{padding:10px 13px;border-bottom:1px solid var(--border);
+  font-size:12px;vertical-align:top;color:var(--text)}
+.rtbl tr:last-child td{border-bottom:none}
+.rtbl tr:hover td{background:var(--off)}
+.hist-tag{font-size:9px;color:var(--text3);border:1px solid var(--border);
+  padding:1px 5px;border-radius:2px;margin-left:5px;vertical-align:middle}
+.mcode{font-family:var(--mono);font-size:10.5px;color:var(--text2)}
+
+/* states */
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:44px;color:var(--text3);font-size:13px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:13px;height:13px;border:1.5px solid var(--border-md);
+  border-top-color:var(--text2);border-radius:50%;animation:spin .55s linear infinite}
+.empty-state{padding:44px 20px;text-align:center;color:var(--text3);font-size:13px}
+.err-bar{padding:11px 15px;border:1px solid var(--red-b);border-radius:4px;
+  color:var(--red);font-size:12px;margin-bottom:14px}
+.notice-bar{padding:11px 15px;border:1px solid var(--border);border-radius:4px;
+  color:var(--text2);font-size:12px;margin-bottom:16px;background:var(--off)}
+
+@media(max-width:740px){
+  .cmp-hdr-row,.cmp-pair{grid-template-columns:1fr}
+  .mem-grid{grid-template-columns:1fr}
+  .main{padding:20px 16px}
+  .hdr,.nav{padding-left:16px;padding-right:16px}
+}
+
+/* ── FLAT WHITE RESET — no gradients or glows anywhere ── */
+html{background:var(--white);margin:0;padding:0}
+body{background:var(--white);box-shadow:none;outline:none}
+.hdr{box-shadow:none;outline:none}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone{border:1.5px dashed var(--border-md);border-radius:6px;
+  padding:26px 20px;text-align:center;cursor:pointer;background:var(--white);
+  transition:border-color .15s,background .15s;position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--text);background:var(--off)}
+.upload-zone.matched{border-style:solid;border-color:var(--border-md);
+  background:var(--off);cursor:default}
+.up-icon{font-size:18px;color:var(--text3);margin-bottom:8px;line-height:1}
+.up-main{font-size:13px;color:var(--text2);margin-bottom:4px}
+.up-link{background:none;border:none;color:var(--text);text-decoration:underline;
+  text-underline-offset:2px;cursor:pointer;font-size:13px;font-family:var(--font);padding:0}
+.up-sub{font-size:11px;color:var(--text3)}
+.up-fname{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.up-type{font-size:12px;color:var(--text2);margin-top:3px}
+.up-clear{font-size:11px;color:var(--text3);text-decoration:underline;
+  cursor:pointer;border:none;background:none;padding:0;margin-top:8px;display:inline-block}
+.mt-note{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
+.up-dl{margin-top:9px}
+.up-dl a{font-size:11.5px;color:var(--text3);text-decoration:underline;text-underline-offset:2px}
+.up-dl a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="brand">
+    <span class="brand-name">TerraCheck DD</span>
+    <span class="brand-sep">—</span>
+    <span class="brand-tag">property diligence that remembers</span>
+  </div>
+  <div class="hdr-count" id="hdrCount">loading…</div>
+</header>
+
+<nav class="nav">
+  <div class="tab on"  data-v="new">New Review</div>
+  <div class="tab"     data-v="reviews">Reviews</div>
+  <div class="tab"     data-v="compare">Compare</div>
+  <div class="tab"     data-v="memory">Memory</div>
+</nav>
+
+<main class="main">
+
+  <!-- ── NEW REVIEW ── -->
+  <div class="view on" id="v-new">
+    <div class="nr-wrap">
+      <div class="sec-hd">Run a Review</div>
+
+      <div class="form-field">
+        <label class="form-lbl lbl" for="selMatterType">Matter type</label>
+        <select id="selMatterType">
+          <option value="multi_sf">Residential purchase — multi-unit SF</option>
+          <option value="single_family">Residential purchase — single family</option>
+          <option value="commercial">Commercial purchase</option>
+          <option value="ground_lease">Ground lease</option>
+        </select>
+        <div class="mt-note" id="mtNote"></div>
+      </div>
+
+      <div class="form-field">
+        <div class="lbl" style="margin-bottom:8px">Document</div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept=".md,.txt,.pdf" style="display:none">
+          <div id="upInner">
+            <div class="up-icon">↑</div>
+            <div class="up-main">Drop a file or <button class="up-link" type="button" id="browseBtn">browse</button></div>
+            <div class="up-sub">Accepts .md · .txt · .pdf</div>
+          </div>
+          <div id="upResult" style="display:none">
+            <div class="up-fname" id="upFileName"></div>
+            <div class="up-type" id="upTypeLabel"></div>
+            <button class="up-clear" id="upClearBtn" type="button">× Remove file</button>
+          </div>
+        </div>
+        <div class="up-dl">
+          <a href="deploy/sample_purchase_agreement.md" download="sample_purchase_agreement.md">↓ Download sample document</a>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl lbl" for="selPartner">Partner</label>
+        <select id="selPartner"><option value="">Loading…</option></select>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl lbl" for="selClient">Client</label>
+        <select id="selClient"><option value="">Loading…</option></select>
+      </div>
+
+      <button class="run-btn" id="runBtn">Run Review</button>
+
+      <div class="prog-wrap" id="progWrap">
+        <div id="progSteps"></div>
+      </div>
+
+      <div class="nr-notice" id="nrNotice">
+        <div class="nr-notice-ttl">No review on file</div>
+        <div class="nr-notice-sub" id="nrNoticeSub">No pre-computed review found for this combination. Run the full CLAUDE.md procedure to generate one.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REVIEWS ── -->
+  <div class="view" id="v-reviews">
+    <div id="reviewsOut">
+      <div class="loading"><div class="spinner"></div>Loading from output/…</div>
+    </div>
+  </div>
+
+  <!-- ── COMPARE ── -->
+  <div class="view" id="v-compare">
+    <div id="compareOut"></div>
+  </div>
+
+  <!-- ── MEMORY ── -->
+  <div class="view" id="v-memory">
+    <div id="memoryOut"></div>
+  </div>
+
+</main>
+
+<script>
+// ── STATIC MEMORY ─────────────────────────────────────────────────────────────
+
+const PARTNERS = [
+  { name:'Sarah Lin',
+    clauses:[
+      { name:'Title policy — CLTA → ALTA',
+        stance:'Always requires ALTA extended coverage; seller refusal is non-negotiable',
+        habit:'Refusal = RED', sev:'RED' },
+      { name:'Schedule B survey / easement exceptions',
+        stance:'All must be physically located on a current survey before acceptance',
+        habit:'RED until located on survey', sev:'RED' },
+      { name:'Mechanics\' liens at COE',
+        stance:'Never accepts uncleared mechanics\' lien; recorded release or 1.5× bond required',
+        habit:'Always RED', sev:'RED' }
+    ],
+    style:'Terse bullet flags citing exception numbers; no client-friendly softening'
+  },
+  { name:'David Torres',
+    clauses:[
+      { name:'Standard Schedule B exceptions',
+        stance:'Accepts with disclosure; does not require clearing unless material',
+        habit:'AMBER with disclosure', sev:'AMBER' },
+      { name:'Title policy level — CLTA vs ALTA',
+        stance:'Flexible; does not require ALTA extended coverage as a condition',
+        habit:'Notes absence; not RED', sev:'GREEN' },
+      { name:'Inspection contingency — pre-1980 SF buildings',
+        stance:'Never waives or shortens below 17 calendar days',
+        habit:'Under 17 days = RED (hard floor)', sev:'RED' },
+      { name:'SF Rent Ordinance protected tenancies',
+        stance:'Very cautious; requires estoppel certificates from all protected tenants',
+        habit:'No estoppel or vacancy plan = RED', sev:'RED' }
+    ],
+    style:'Narrative flags with client-friendly plain-language explanations; full legal exposure written out'
+  }
+];
+
+const CLIENTS = [
+  { name:'Bayline Development LLC',
+    appetite:'aggressive',
+    dealBreakers:[
+      'Uncleared monetary liens (mechanics\', judgment, tax) at or approaching COE — must be released, bonded, or credited before close',
+      'Protected tenancies without documented vacancy plan — buyout budget or Ellis Act strategy required; otherwise deal-breaker regardless of price'
+    ],
+    notes:[
+      'Accepts easement risk including active sewer / utility easements without requiring cure',
+      'Accepts CC&R risk including use restrictions and rental caps, subject to counsel review',
+      'Flexible on ALTA extended coverage; open to negotiation if title officer requires it for a specific encroachment issue'
+    ]
+  }
+];
+
+const HIST = [
+  { matter:'Mission-St-2025-SL', doc_type:'preliminary_title_report',
+    partner:'Sarah Lin', client:'(Confidential — Mission District, 2025)', date:'2025', _hist:true,
+    findings:[
+      { ref:'Sched B, Exc. 4',
+        issue:'Unreleased DOT (2019); Pacific Rim Savings Bank FSB — FDIC closed 2011; successor not in chain of title; no reconveyance',
+        severity:'RED',
+        rationale:'Sarah Lin: uncleared monetary encumbrances always RED.',
+        precedent:'' }
+    ],
+    resolution:'FDIC payoff demand obtained; 110% escrow holdback established; reconveyance recorded. Policy issued without exception.'
+  },
+  { matter:'Valencia-St-2025-DT', doc_type:'purchase_agreement',
+    partner:'David Torres', client:'(Confidential — Valencia Street, 2025)', date:'2025', _hist:true,
+    findings:[
+      { ref:'§4 Tenancies / Seller disclosure',
+        issue:'Unit 3 — rent-ordinance-protected tenancy; 27-year occupancy; no estoppel; no vacancy plan; buyer requires vacant possession',
+        severity:'RED',
+        rationale:'Torres hard rule: protected tenancies RED until estoppel + vacancy plan. Bayline deal-breaker.',
+        precedent:'' }
+    ],
+    resolution:'$95,000 price credit (direct buyout $65K + legal/contingency $30K). Tenant LOI to vacate within 120 days. Estoppel obtained. Resolved to AMBER. Deal closed.'
+  }
+];
+
+const DOC_LABELS = {
+  'preliminary_title_report':'Preliminary Title Report',
+  'purchase_agreement':'Purchase and Sale Agreement'
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let reviews = [];
+let activeRevIdx = 0;
+let cmpLeft  = -1;
+let cmpRight = -1;
+let detectedDocType = null;
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+
+const esc = s => s == null ? '' : String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+const chip = sev => {
+  const s = (sev || '').toUpperCase();
+  return `<span class="chip chip-${s}">${s}</span>`;
+};
+
+const sumChips = findings => {
+  const c = {RED:0,AMBER:0,GREEN:0};
+  (findings||[]).forEach(f => { const s=(f.severity||'').toUpperCase(); if(c[s]!==undefined) c[s]++; });
+  return ['RED','AMBER','GREEN'].filter(s => c[s] > 0)
+    .map(s => `<span class="sum-chip sum-chip-${s}"><span class="sdot"></span>${c[s]} ${s}</span>`)
+    .join('');
+};
+
+// ── PRECEDENT BACKFILL ────────────────────────────────────────────────────────
+
+const KNOWN_MATTERS = [
+  'Mission-St-2025-SL','Folsom-St-2026-SL','Folsom-St-2026-DT','Valencia-St-2025-DT'
+];
+
+function derivePrecedent(f) {
+  const existing = (f.precedent || '').trim();
+  if (existing) return existing;
+
+  const r = f.rationale || '';
+  const parts = [];
+
+  KNOWN_MATTERS.forEach(m => { if (r.includes(m)) parts.push(m); });
+
+  if (/Lin.*always RED|always RED.*Lin/i.test(r))
+    parts.push('Lin profile: always RED');
+  if (/Lin.*non.negotiable|non.negotiable.*Lin/i.test(r))
+    parts.push('Lin: non-negotiable');
+  if (/Torres.*hard (?:rule|floor)|hard (?:floor|rule).*Torres|17.day.*hard|Torres.*17.day/i.test(r))
+    parts.push('Torres: 17-day hard floor');
+  if (/Torres.*(?:does not require|flexible on).*ALTA|ALTA.*Torres.*not require/i.test(r))
+    parts.push('Torres: flexible on title policy');
+  if (/Bayline deal.breaker/i.test(r))
+    parts.push('Bayline: deal-breaker');
+
+  return [...new Set(parts)].join(' · ');
+}
+
+// ── DATA LOAD ─────────────────────────────────────────────────────────────────
+
+async function loadReviews() {
+  try {
+    const res = await fetch('output/');
+    if (!res.ok) throw new Error(res.status);
+    const html  = await res.text();
+    const doc   = new DOMParser().parseFromString(html, 'text/html');
+    const files = [...doc.querySelectorAll('a[href]')]
+      .map(a => a.getAttribute('href'))
+      .filter(h => h && h.endsWith('.json') && !h.includes('/'));
+    if (!files.length) return [];
+    const settled = await Promise.allSettled(
+      files.map(f => fetch(`output/${f}`).then(r => { if(!r.ok) throw new Error(f); return r.json(); }))
+    );
+    return settled.filter(s => s.status === 'fulfilled').map(s => s.value);
+  } catch(e) {
+    console.error(e);
+    return null;
+  }
+}
+
+// ── NEW REVIEW ────────────────────────────────────────────────────────────────
+
+function populateNewReviewForm() {
+  if (!Array.isArray(reviews) || !reviews.length) return;
+  const partners = [...new Set(reviews.map(r => r.partner))];
+  const clients  = [...new Set(reviews.map(r => r.client))];
+  document.getElementById('selPartner').innerHTML =
+    partners.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  document.getElementById('selClient').innerHTML =
+    clients.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+async function runReview() {
+  const partner = document.getElementById('selPartner').value;
+  const client  = document.getElementById('selClient').value;
+  const btn     = document.getElementById('runBtn');
+  const notice  = document.getElementById('nrNotice');
+  const fileUploaded = document.getElementById('upResult').style.display !== 'none';
+
+  notice.style.display = 'none';
+
+  if (!fileUploaded) {
+    document.getElementById('nrNoticeSub').textContent = 'Please upload a document file before running a review.';
+    notice.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+
+  const wrap  = document.getElementById('progWrap');
+  const steps = document.getElementById('progSteps');
+  wrap.style.display = 'block';
+  steps.innerHTML = '';
+
+  const matterType = document.getElementById('selMatterType').value;
+  const STEPS = [
+    matterType === 'multi_sf'
+      ? 'Loading matter-type playbook from MemHub… (14 checks)'
+      : 'Loading matter-type playbook from MemHub… (no prior records)',
+    'Recalling partner & client memory from MemHub…',
+    'Reviewing document against learned playbook…',
+    'Saving review record to team memory…'
+  ];
+
+  for (let i = 0; i < STEPS.length; i++) {
+    const el = document.createElement('div');
+    el.className = 'prog-step';
+    el.innerHTML =
+      `<span class="s-icon" id="si${i}">○</span>` +
+      `<span class="s-txt"  id="st${i}">${STEPS[i]}</span>`;
+    steps.appendChild(el);
+    await delay(20);
+    el.classList.add('vis');
+    await delay(180);
+    const icon = document.getElementById(`si${i}`);
+    icon.textContent = '●';
+    icon.className = 's-icon pulsing';
+    await delay(1050);
+    icon.textContent = '✓';
+    icon.className = 's-icon done';
+    document.getElementById(`st${i}`).className = 's-txt done';
+  }
+
+  await delay(320);
+  wrap.style.display = 'none';
+  steps.innerHTML = '';
+  btn.disabled = false;
+
+  if (!detectedDocType) {
+    document.getElementById('nrNoticeSub').textContent =
+      'Document type not yet in the playbook — a review record will be created once the full CLAUDE.md procedure is run for this document.';
+    notice.style.display = 'block';
+    return;
+  }
+
+  const match = reviews.find(r =>
+    r.doc_type === detectedDocType && r.partner === partner && r.client === client
+  );
+
+  if (match) {
+    activeRevIdx = reviews.indexOf(match);
+    switchView('reviews');
+  } else {
+    const docLabel = DOC_LABELS[detectedDocType] || detectedDocType;
+    document.getElementById('nrNoticeSub').textContent =
+      `No pre-computed review on file for ${docLabel} · ${partner} · ${client}. Run the full CLAUDE.md procedure to generate it.`;
+    notice.style.display = 'block';
+  }
+}
+
+document.getElementById('runBtn').addEventListener('click', runReview);
+
+// ── MATTER TYPE ───────────────────────────────────────────────────────────────
+
+const MATTER_NOTES = {
+  multi_sf:     'Playbook: 14 standard checks learned from prior reviews — rent ordinance tenancies, unpermitted work, seismic/liquefaction, Schedule B monetary liens…',
+  single_family:'Playbook: no review records yet — will be learned from first review.',
+  commercial:   'Playbook: no review records yet — will be learned from first review.',
+  ground_lease: 'Playbook: no review records yet — will be learned from first review.'
+};
+
+function updateMatterNote() {
+  const val = document.getElementById('selMatterType').value;
+  document.getElementById('mtNote').textContent = MATTER_NOTES[val] || '';
+}
+
+document.getElementById('selMatterType').addEventListener('change', updateMatterNote);
+updateMatterNote();
+
+// ── UPLOAD HANDLING ───────────────────────────────────────────────────────────
+
+const DOC_PATTERNS = {
+  purchase_agreement:       /purchase\s+agreement|sale\s+agreement|escrow\s+instruction|liquidated\s+damages|§\s*14\.b|inspection\s+contingency/i,
+  preliminary_title_report: /preliminary\s+(title|report)|prelim.*title|schedule\s+b.*exception|deed\s+of\s+trust.*exception|title\s+insurance.*order/i
+};
+
+function detectDocType(filename, text) {
+  const combined = (filename + ' ' + (text || '')).slice(0, 5000);
+  for (const [type, pat] of Object.entries(DOC_PATTERNS)) {
+    if (pat.test(combined)) return type;
+  }
+  // Filename-only fallback
+  const f = filename.toLowerCase();
+  if (/purchase|sale|agreement|_pa[_\-.]/.test(f)) return 'purchase_agreement';
+  if (/title|prelim|_ptr[_\-.]/.test(f))           return 'preliminary_title_report';
+  return null;
+}
+
+function finishUpload(filename, docType) {
+  detectedDocType = docType;
+  document.getElementById('uploadZone').classList.add('matched');
+  document.getElementById('upInner').style.display = 'none';
+  document.getElementById('upResult').style.display = 'block';
+  document.getElementById('upFileName').textContent = filename;
+  document.getElementById('upTypeLabel').textContent = docType
+    ? '→ Matched: ' + (DOC_LABELS[docType] || docType)
+    : '→ Document type not yet in the playbook';
+}
+
+function clearUpload() {
+  detectedDocType = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('uploadZone').classList.remove('matched');
+  document.getElementById('upInner').style.display = '';
+  document.getElementById('upResult').style.display = 'none';
+  document.getElementById('nrNotice').style.display = 'none';
+}
+
+function handleUploadedFile(file) {
+  if (!file) return;
+  if (/\.pdf$/i.test(file.name)) {
+    finishUpload(file.name, detectDocType(file.name, ''));
+  } else {
+    const reader = new FileReader();
+    reader.onload = e => finishUpload(file.name, detectDocType(file.name, e.target.result));
+    reader.readAsText(file);
+  }
+}
+
+(function wireUpload() {
+  const zone   = document.getElementById('uploadZone');
+  const fileIn = document.getElementById('fileInput');
+  const browse = document.getElementById('browseBtn');
+  const clearB = document.getElementById('upClearBtn');
+
+  zone.addEventListener('click', e => {
+    if (!zone.classList.contains('matched') && e.target !== browse && e.target !== clearB)
+      fileIn.click();
+  });
+  browse.addEventListener('click', e => { e.stopPropagation(); fileIn.click(); });
+  clearB.addEventListener('click', e => { e.stopPropagation(); clearUpload(); });
+  fileIn.addEventListener('change', e => { if (e.target.files[0]) handleUploadedFile(e.target.files[0]); });
+
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f && /\.(md|txt|pdf)$/i.test(f.name)) handleUploadedFile(f);
+  });
+})();
+
+// ── REVIEWS VIEW ──────────────────────────────────────────────────────────────
+
+function renderReviews() {
+  const el = document.getElementById('reviewsOut');
+  if (reviews === null) {
+    el.innerHTML = `<div class="err-bar">Could not load <code>output/</code>. Serve with <strong>python -m http.server 8000</strong> from the project root.</div>`;
+    return;
+  }
+  if (!reviews.length) {
+    el.innerHTML = `<div class="empty-state">No reviews in output/ yet.</div>`;
+    return;
+  }
+
+  const sel = reviews.length > 1
+    ? `<div class="rev-sel">${reviews.map((r,i) =>
+        `<button class="rev-btn${i===activeRevIdx?' on':''}" data-i="${i}">
+          ${esc(DOC_LABELS[r.doc_type]||r.doc_type)} — ${esc(r.partner)}
+        </button>`).join('')}</div>`
+    : '';
+
+  el.innerHTML = sel + reviewCardHtml(reviews[activeRevIdx]);
+
+  el.querySelectorAll('.rev-btn').forEach(b => b.addEventListener('click', () => {
+    activeRevIdx = +b.dataset.i;
+    renderReviews();
+  }));
+}
+
+function reviewCardHtml(r) {
+  const findings = r.findings || [];
+
+  const rows = findings.map(f => {
+    const s   = (f.severity || '').toUpperCase();
+    const prec = derivePrecedent(f);
+    return `<tr>
+      <td><span class="ref-code">${esc(f.ref)}</span></td>
+      <td>${esc(f.issue)}</td>
+      <td>${chip(f.severity)}</td>
+      <td class="rat-cell">${esc(f.rationale)}</td>
+      <td>${prec
+        ? `<span class="prec-cell">${esc(prec)}</span>`
+        : `<span class="prec-none">—</span>`}</td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="card-hdr">
+      <div>
+        <div class="card-title">${esc(DOC_LABELS[r.doc_type] || r.doc_type)}</div>
+        <div class="meta-row">
+          <span class="meta"><span class="lbl">matter</span>&nbsp;${esc(r.matter)}</span>
+          <span class="meta"><span class="lbl">partner</span>&nbsp;${esc(r.partner)}</span>
+          <span class="meta"><span class="lbl">client</span>&nbsp;${esc(r.client)}</span>
+          <span class="meta"><span class="lbl">date</span>&nbsp;${esc(r.date)}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        ${sumChips(findings)}
+      </div>
+    </div>
+    ${findings.length ? `
+    <table class="ftbl">
+      <thead><tr>
+        <th style="width:120px">Ref</th>
+        <th>Issue</th>
+        <th style="width:75px">Severity</th>
+        <th>Rationale</th>
+        <th style="width:210px">Precedent</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>` : '<div class="empty-state" style="padding:20px">No findings.</div>'}
+  </div>`;
+}
+
+// ── COMPARE VIEW ──────────────────────────────────────────────────────────────
+
+function renderCompare() {
+  const el = document.getElementById('compareOut');
+
+  const pool = [
+    ...reviews.map(r => ({...r, _hist:false})),
+    ...HIST
+  ];
+
+  if (!pool.length) {
+    el.innerHTML = `<div class="empty-state">No reviews to compare.</div>`;
+    return;
+  }
+
+  // Set defaults on first render: PA SL (left) vs PA DT (right) — sharpest divergence (§5.C RED vs GREEN)
+  if (cmpLeft < 0) {
+    cmpLeft  = pool.findIndex(r => r.doc_type==='purchase_agreement' && r.partner==='Sarah Lin'    && !r._hist);
+    cmpRight = pool.findIndex(r => r.doc_type==='purchase_agreement' && r.partner==='David Torres' && !r._hist);
+    if (cmpLeft  < 0) cmpLeft  = 0;
+    if (cmpRight < 0) cmpRight = Math.min(1, pool.length - 1);
+  }
+
+  const optHtml = pool.map((r,i) =>
+    `<option value="${i}">${esc(DOC_LABELS[r.doc_type]||r.doc_type)} — ${esc(r.partner)}${r._hist?' (historical)':''}</option>`
+  ).join('');
+
+  const same = cmpLeft === cmpRight;
+
+  const lSel = `<select id="cmpL">${pool.map((r,i) =>
+    `<option value="${i}"${i===cmpLeft?' selected':''}>${esc(DOC_LABELS[r.doc_type]||r.doc_type)} — ${esc(r.partner)}${r._hist?' (hist)':''}</option>`).join('')}</select>`;
+  const rSel = `<select id="cmpR">${pool.map((r,i) =>
+    `<option value="${i}"${i===cmpRight?' selected':''}>${esc(DOC_LABELS[r.doc_type]||r.doc_type)} — ${esc(r.partner)}${r._hist?' (hist)':''}</option>`).join('')}</select>`;
+
+  el.innerHTML = `
+    <div class="cmp-ctrl">
+      <div class="cmp-field">
+        <div class="lbl" style="margin-bottom:6px">Left review</div>
+        ${lSel}
+      </div>
+      <div class="cmp-field">
+        <div class="lbl" style="margin-bottom:6px">Right review</div>
+        ${rSel}
+      </div>
+    </div>
+    ${same
+      ? `<div class="notice-bar">Select two different reviews to compare.</div>`
+      : sideBySideHtml(pool[cmpLeft], pool[cmpRight])}
+  `;
+
+  document.getElementById('cmpL').addEventListener('change', e => { cmpLeft  = +e.target.value; renderCompare(); });
+  document.getElementById('cmpR').addEventListener('change', e => { cmpRight = +e.target.value; renderCompare(); });
+}
+
+function sideBySideHtml(L, R) {
+  const lf = L.findings || [];
+  const rf = R.findings || [];
+  const lm = {}; lf.forEach(f => lm[f.ref] = f);
+  const rm = {}; rf.forEach(f => rm[f.ref] = f);
+  const allRefs = [...new Set([...lf.map(f=>f.ref), ...rf.map(f=>f.ref)])];
+
+  const cardHtml = (f, other) => {
+    if (!f) return `<div class="cmp-row absent">Not flagged in this review</div>`;
+    const onlyMe  = !other;
+    const sevDiff = other && other.severity !== f.severity;
+    const cls = sevDiff ? 'diff-sev' : onlyMe ? 'only-me' : '';
+    const prec = derivePrecedent(f);
+    return `<div class="cmp-row ${cls}">
+      <span class="cmp-ref">${esc(f.ref)}</span>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+        ${chip(f.severity)}
+        ${sevDiff ? `<span class="diff-lbl">severity differs</span>` : ''}
+        ${onlyMe  ? `<span class="only-lbl">only here</span>` : ''}
+      </div>
+      <div class="cmp-iss">${esc(f.issue)}</div>
+      <div class="cmp-rat">${esc(f.rationale)}</div>
+      ${prec ? `<div class="cmp-prec">${esc(prec)}</div>` : ''}
+    </div>`;
+  };
+
+  const pairRows = allRefs.map(ref =>
+    `<div class="cmp-pair">${cardHtml(lm[ref], rm[ref])}${cardHtml(rm[ref], lm[ref])}</div>`
+  ).join('');
+
+  const diffCount = allRefs.filter(ref => {
+    const l = lm[ref], r = rm[ref];
+    return !l || !r || l.severity !== r.severity;
+  }).length;
+
+  const colHdr = r => `<div class="cmp-col-hdr">
+    <div class="cmp-col-name">${esc(DOC_LABELS[r.doc_type]||r.doc_type)}</div>
+    <div class="cmp-col-sub">${esc(r.partner)} · ${esc(r.client)} · ${esc(r.date||'—')}</div>
+    <div style="margin-top:7px;display:flex;gap:5px;flex-wrap:wrap">${sumChips(r.findings||[])}</div>
+  </div>`;
+
+  return `
+    <div class="cmp-stats">
+      <strong>${allRefs.length}</strong> findings across both reviews —
+      <strong style="color:${diffCount ? 'var(--red)' : 'var(--green)'}">${diffCount}</strong> with differences
+    </div>
+    <div class="cmp-hdr-row">
+      ${colHdr(L)}${colHdr(R)}
+    </div>
+    <div class="cmp-pairs">${pairRows}</div>
+    <div class="cmp-legend">
+      <div class="leg-item">
+        <div class="leg-line" style="background:var(--red-b)"></div>
+        Severity differs
+      </div>
+      <div class="leg-item">
+        <div class="leg-line" style="background:var(--border-md)"></div>
+        Finding only in one review
+      </div>
+    </div>`;
+}
+
+// ── MEMORY VIEW ───────────────────────────────────────────────────────────────
+
+function renderMemory() {
+  const partnerCards = PARTNERS.map(p => `
+    <div class="mem-card">
+      <div class="mem-card-hdr">
+        <div class="mem-card-name">${esc(p.name)}</div>
+        <div class="mem-card-type">
+          Partner Profile
+          <span class="memhub-pill">● MemHub</span>
+        </div>
+      </div>
+      <div class="mem-card-body">
+        <div class="mem-item">
+          <div class="mem-lbl">Clause Positions</div>
+          ${p.clauses.map(c => `
+            <div class="clause ${c.sev}">
+              <div class="cl-name">${esc(c.name)}</div>
+              <div class="cl-stance">${esc(c.stance)}</div>
+              <div class="cl-habit">${chip(c.sev)}<span>${esc(c.habit)}</span></div>
+            </div>`).join('')}
+        </div>
+        <div class="mem-item">
+          <div class="mem-lbl">Markup Style</div>
+          <div style="font-size:12px;color:var(--text2);padding:4px 0;font-style:italic">${esc(p.style)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  const clientCards = CLIENTS.map(c => `
+    <div class="mem-card">
+      <div class="mem-card-hdr">
+        <div class="mem-card-name">${esc(c.name)}</div>
+        <div class="mem-card-type">
+          Client Profile
+          <span class="memhub-pill">● MemHub</span>
+        </div>
+      </div>
+      <div class="mem-card-body">
+        <div class="mem-item">
+          <div class="mem-lbl">Risk Appetite</div>
+          <span class="app-badge app-${c.appetite}">${esc(c.appetite.charAt(0).toUpperCase()+c.appetite.slice(1))}</span>
+        </div>
+        <div class="mem-item">
+          <div class="mem-lbl">Deal-Breakers</div>
+          ${c.dealBreakers.map(d => `<div class="dbk"><span style="flex-shrink:0;margin-top:1px">✕</span>${esc(d)}</div>`).join('')}
+        </div>
+        <div class="mem-item">
+          <div class="mem-lbl">Accepts</div>
+          ${c.notes.map(n => `<div class="ok"><span style="flex-shrink:0;color:var(--green);margin-top:1px">✓</span>${esc(n)}</div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+
+  const allRec = [
+    ...(Array.isArray(reviews) ? reviews : []).map(r => ({...r,_hist:false})),
+    ...HIST
+  ];
+
+  const recRows = allRec.map(r => {
+    const c = {RED:0,AMBER:0,GREEN:0};
+    (r.findings||[]).forEach(f => { const s=(f.severity||'').toUpperCase(); if(c[s]!==undefined) c[s]++; });
+    const chips = ['RED','AMBER','GREEN'].filter(s=>c[s]>0)
+      .map(s=>`<span class="chip chip-${s}">${c[s]}&thinsp;${s}</span>`).join(' ');
+    const res = r.resolution || '—';
+    return `<tr>
+      <td><span class="mcode">${esc(r.matter||'—')}</span>${r._hist?`<span class="hist-tag">hist</span>`:''}</td>
+      <td style="color:var(--text2)">${esc(DOC_LABELS[r.doc_type]||r.doc_type)}</td>
+      <td>${esc(r.partner)}</td>
+      <td style="color:var(--text2)">${esc(r.client)}</td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">${chips||'—'}</div></td>
+      <td style="color:var(--text2);max-width:220px">${esc(res.length>90?res.slice(0,90)+'…':res)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('memoryOut').innerHTML = `
+    <div class="mem-sec">
+      <div class="sec-hd" style="display:flex;align-items:center;gap:8px">
+        Partner Profiles <span class="memhub-pill">● MemHub</span>
+      </div>
+      <div class="mem-grid">${partnerCards}</div>
+    </div>
+    <div class="mem-sec">
+      <div class="sec-hd" style="display:flex;align-items:center;gap:8px">
+        Client Profiles <span class="memhub-pill">● MemHub</span>
+      </div>
+      <div class="mem-grid">${clientCards}</div>
+    </div>
+    <div class="mem-sec">
+      <div class="sec-hd" style="display:flex;align-items:center;gap:8px">
+        Review Records <span class="memhub-pill">● MemHub + Live</span>
+      </div>
+      <div class="card">
+        ${allRec.length ? `
+        <table class="rtbl">
+          <thead><tr>
+            <th>Matter</th>
+            <th>Doc Type</th>
+            <th>Partner</th>
+            <th>Client</th>
+            <th>Flags</th>
+            <th>Resolution</th>
+          </tr></thead>
+          <tbody>${recRows}</tbody>
+        </table>` : '<div class="empty-state" style="padding:20px">No records yet.</div>'}
+      </div>
+    </div>`;
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+
+function switchView(name) {
+  document.querySelectorAll('.tab').forEach(t  => t.classList.toggle('on',  t.dataset.v === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === `v-${name}`));
+  if (name === 'compare') renderCompare();
+  if (name === 'memory')  renderMemory();
+  if (name === 'reviews') renderReviews();
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchView(t.dataset.v)));
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+(async () => {
+  reviews = await loadReviews();
+
+  if (Array.isArray(reviews)) {
+    const DOC_ORDER     = { preliminary_title_report: 0, purchase_agreement: 1 };
+    const PARTNER_ORDER = { 'Sarah Lin': 0, 'David Torres': 1 };
+    reviews.sort((a, b) => {
+      const dd = (DOC_ORDER[a.doc_type] ?? 99) - (DOC_ORDER[b.doc_type] ?? 99);
+      if (dd !== 0) return dd;
+      return (PARTNER_ORDER[a.partner] ?? 99) - (PARTNER_ORDER[b.partner] ?? 99);
+    });
+    const defIdx = reviews.findIndex(r => r.doc_type === 'purchase_agreement' && r.partner === 'Sarah Lin');
+    activeRevIdx = defIdx >= 0 ? defIdx : 0;
+  }
+
+  const n = Array.isArray(reviews) ? reviews.length : 0;
+  const total = n + HIST.length;
+  document.getElementById('hdrCount').textContent =
+    reviews === null
+      ? 'error loading output/'
+      : `${total} review record${total !== 1 ? 's' : ''}`;
+
+  populateNewReviewForm();
+  renderReviews();
+  renderMemory();
+})();
+</script>
+</body>
+</html>
