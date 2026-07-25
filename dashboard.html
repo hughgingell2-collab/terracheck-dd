@@ -113,7 +113,7 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 .ftbl tr:last-child td{border-bottom:none}
 .ftbl tr:hover td{background:var(--off)}
 .ref-code{font-family:var(--mono);font-size:10.5px;color:var(--text2);white-space:nowrap}
-.ftbl td.rat-cell{color:var(--rat);font-style:italic}
+.ftbl td.rat-cell{font-style:normal;color:inherit}
 .prec-cell{font-style:italic;color:var(--text3);font-size:12px;line-height:1.4}
 .prec-none{color:var(--text3);font-size:11px}
 
@@ -176,17 +176,25 @@ select:focus{outline:2px solid var(--border-md);outline-offset:1px}
 .cmp-pair{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;border-bottom:1px solid var(--border)}
 .cmp-pair:last-child{border-bottom:none}
 .cmp-pair>.cmp-row:first-child{border-right:1px solid var(--border)}
+.cmp-pair.diff-sev>.cmp-row{background:#fffbf5}
+.cmp-pair.diff-sev>.cmp-row:first-child{border-right-color:var(--amb-b)}
 .cmp-row{padding:11px 14px;font-size:12px}
-.cmp-row.diff-sev{background:#fff7f7;border-left:2px solid var(--red-b)}
+.cmp-row.diff-sev{border-left:2px solid var(--amb-b)}
 .cmp-row.only-me{background:var(--off);border-left:2px solid var(--border-md)}
 .cmp-row.absent{opacity:.25;font-style:italic;color:var(--text3);
   padding:9px 14px;font-size:11px;display:flex;align-items:center}
 .cmp-ref{font-family:var(--mono);font-size:10px;color:var(--text3);display:block;margin-bottom:4px}
 .cmp-iss{color:var(--text);line-height:1.4;margin-bottom:3px}
-.cmp-rat{color:var(--rat);font-style:italic;font-size:11px;margin-top:3px;line-height:1.4}
+.cmp-rat{font-size:11px;margin-top:3px;line-height:1.5}
+.rat-lead{color:var(--rat);font-weight:600}
+.rat-body{color:#374151}
+.rat-clamped{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rat-more{background:none;border:none;padding:2px 0 0;font-size:10.5px;color:var(--text3);
+  cursor:pointer;font-family:var(--font);display:block;margin-top:3px}
+.rat-more:hover{color:var(--text2)}
 .cmp-prec{color:var(--text3);font-size:10.5px;font-style:italic;margin-top:4px}
 .diff-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
-  color:var(--red);margin-left:5px}
+  color:var(--amber);margin-left:5px;font-weight:600}
 .only-lbl{font-size:9px;font-variant:small-caps;letter-spacing:.04em;
   color:var(--text3);margin-left:5px}
 .cmp-stats{font-size:12px;color:var(--text2);margin-bottom:16px}
@@ -734,6 +742,15 @@ function handleUploadedFile(file) {
 
 // ── REVIEWS VIEW ──────────────────────────────────────────────────────────────
 
+function formatRationale(text) {
+  if (!text) return '';
+  const ci = text.indexOf(': ');
+  if (ci > 0 && ci <= 40 && !/[.,]/.test(text.slice(0, ci))) {
+    return `<span class="rat-lead">${esc(text.slice(0, ci + 1))}</span><span class="rat-body">${esc(text.slice(ci + 1))}</span>`;
+  }
+  return `<span class="rat-body">${esc(text)}</span>`;
+}
+
 function renderReviews() {
   const el = document.getElementById('reviewsOut');
   if (reviews === null) {
@@ -784,7 +801,7 @@ function reviewCardHtml(r) {
       <td><span class="ref-code">${esc(f.ref)}</span></td>
       <td>${esc(f.issue)}</td>
       <td>${chip(f.severity)}</td>
-      <td class="rat-cell">${esc(f.rationale)}</td>
+      <td class="rat-cell">${formatRationale(f.rationale)}</td>
       <td>${prec
         ? `<span class="prec-cell">${esc(prec)}</span>`
         : `<span class="prec-none">—</span>`}</td>
@@ -872,6 +889,12 @@ function renderCompare() {
 
   document.getElementById('cmpL').addEventListener('change', e => { cmpLeft  = +e.target.value; renderCompare(); });
   document.getElementById('cmpR').addEventListener('change', e => { cmpRight = +e.target.value; renderCompare(); });
+  el.querySelectorAll('.rat-more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nowClamped = btn.previousElementSibling.classList.toggle('rat-clamped');
+      btn.textContent = nowClamped ? 'more ↓' : 'less ↑';
+    });
+  });
 }
 
 function sideBySideHtml(L, R) {
@@ -887,6 +910,10 @@ function sideBySideHtml(L, R) {
     const sevDiff = other && other.severity !== f.severity;
     const cls = sevDiff ? 'diff-sev' : onlyMe ? 'only-me' : '';
     const prec = derivePrecedent(f);
+    const ratHtml = formatRationale(f.rationale);
+    const ratBlock = f.rationale && f.rationale.length > 180
+      ? `<div class="cmp-rat rat-clamped">${ratHtml}</div><button class="rat-more" type="button">more ↓</button>`
+      : `<div class="cmp-rat">${ratHtml}</div>`;
     return `<div class="cmp-row ${cls}">
       <span class="cmp-ref">${esc(f.ref)}</span>
       <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
@@ -895,14 +922,15 @@ function sideBySideHtml(L, R) {
         ${onlyMe  ? `<span class="only-lbl">only here</span>` : ''}
       </div>
       <div class="cmp-iss">${esc(f.issue)}</div>
-      <div class="cmp-rat">${esc(f.rationale)}</div>
+      ${ratBlock}
       ${prec ? `<div class="cmp-prec">${esc(prec)}</div>` : ''}
     </div>`;
   };
 
-  const pairRows = allRefs.map(ref =>
-    `<div class="cmp-pair">${cardHtml(lm[ref], rm[ref])}${cardHtml(rm[ref], lm[ref])}</div>`
-  ).join('');
+  const pairRows = allRefs.map(ref => {
+    const pairCls = (lm[ref] && rm[ref] && lm[ref].severity !== rm[ref].severity) ? 'diff-sev' : '';
+    return `<div class="cmp-pair ${pairCls}">${cardHtml(lm[ref], rm[ref])}${cardHtml(rm[ref], lm[ref])}</div>`;
+  }).join('');
 
   const diffCount = allRefs.filter(ref => {
     const l = lm[ref], r = rm[ref];
