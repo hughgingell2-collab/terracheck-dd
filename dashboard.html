@@ -55,7 +55,7 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 
 /* ── NAV ── */
 .nav{background:var(--white);border-bottom:1px solid var(--border);
-  padding:0 36px;display:flex}
+  padding:0 36px;display:flex;position:sticky;top:var(--hdr-h,56px);z-index:99}
 .tab{padding:11px 18px;font-size:12.5px;color:var(--text2);cursor:pointer;
   border-bottom:2px solid transparent;user-select:none;
   transition:color .1s,border-color .1s;letter-spacing:.01em}
@@ -94,10 +94,11 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 .sdot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}
 
 /* ── CARD ── */
-.card{border:1px solid var(--border);border-radius:5px;margin-bottom:18px;overflow:hidden}
+.card{border:1px solid var(--border);border-radius:5px;margin-bottom:18px;overflow:clip}
 .card-hdr{padding:14px 20px;border-bottom:1px solid var(--border);
   background:var(--off);display:flex;align-items:flex-start;
-  justify-content:space-between;flex-wrap:wrap;gap:10px}
+  justify-content:space-between;flex-wrap:wrap;gap:10px;
+  position:sticky;top:var(--above,100px);z-index:50}
 .card-title{font-family:var(--serif);font-size:14px;font-weight:normal;
   color:var(--text);margin-bottom:5px}
 .meta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:2px}
@@ -105,6 +106,7 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 
 /* ── FINDINGS TABLE ── */
 .ftbl{width:100%;border-collapse:collapse}
+.ftbl thead{position:sticky;top:var(--card-top,190px);z-index:49}
 .ftbl th{padding:8px 14px;text-align:left;font-size:9.5px;
   font-variant:small-caps;letter-spacing:.07em;color:var(--label);
   background:var(--subtle);border-bottom:1px solid var(--border);font-weight:500}
@@ -167,7 +169,7 @@ select:focus{outline:2px solid var(--border-md);outline-offset:1px}
 .cmp-ctrl{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap;
   margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
 .cmp-field{}
-.cmp-hdr-row{display:grid;grid-template-columns:1fr 1fr}
+.cmp-hdr-row{display:grid;grid-template-columns:1fr 1fr;position:sticky;top:var(--above,100px);z-index:50}
 .cmp-col-hdr{padding:12px 15px;border:1px solid var(--border);border-bottom:none;
   border-radius:5px 5px 0 0;background:var(--off)}
 .cmp-col-hdr:last-child{border-left:none}
@@ -755,6 +757,17 @@ function formatRationale(text, fallbackName) {
     : `<span class="rat-body">${esc(text)}</span>`;
 }
 
+function updateStickyOffsets() {
+  const hdrH = document.querySelector('.hdr')?.offsetHeight || 0;
+  const navH = document.querySelector('.nav')?.offsetHeight || 0;
+  const above = hdrH + navH;
+  const r = document.documentElement.style;
+  r.setProperty('--hdr-h', hdrH + 'px');
+  r.setProperty('--above', above + 'px');
+  const cardHdr = document.querySelector('.card-hdr');
+  r.setProperty('--card-top', (above + (cardHdr ? cardHdr.offsetHeight : 88)) + 'px');
+}
+
 function renderReviews() {
   const el = document.getElementById('reviewsOut');
   if (reviews === null) {
@@ -784,6 +797,7 @@ function renderReviews() {
   }
 
   el.innerHTML = selHtml + reviewCardHtml(reviews[activeRevIdx]);
+  requestAnimationFrame(updateStickyOffsets);
 
   const docEl  = document.getElementById('revDoc');
   const partEl = document.getElementById('revPartner');
@@ -890,6 +904,7 @@ function renderCompare() {
       ? `<div class="notice-bar">Select two different reviews to compare.</div>`
       : sideBySideHtml(pool[cmpLeft], pool[cmpRight])}
   `;
+  requestAnimationFrame(updateStickyOffsets);
 
   document.getElementById('cmpL').addEventListener('change', e => { cmpLeft  = +e.target.value; renderCompare(); });
   document.getElementById('cmpR').addEventListener('change', e => { cmpRight = +e.target.value; renderCompare(); });
@@ -1116,6 +1131,8 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
   populateNewReviewForm();
   renderReviews();
   renderMemory();
+  updateStickyOffsets();
+  window.addEventListener('resize', updateStickyOffsets);
 })();
 </script>
 </body>
