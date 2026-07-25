@@ -118,7 +118,9 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 .prec-none{color:var(--text3);font-size:11px}
 
 /* ── REVIEW SELECTOR ── */
-.rev-sel{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.rev-sel{display:flex;align-items:flex-end;gap:16px;margin-bottom:20px}
+.rev-field{display:flex;flex-direction:column;gap:6px}
+.rev-sel select{background-image:none;padding-right:10px;min-width:180px}
 
 /* ── SELECTS ── */
 select{background:var(--white);border:1px solid var(--border-md);
@@ -745,24 +747,31 @@ function renderReviews() {
 
   let selHtml = '';
   if (reviews.length > 1) {
-    let curGroup = null, opts = '';
-    reviews.forEach((r, i) => {
-      const doc = esc(DOC_LABELS[r.doc_type] || r.doc_type);
-      if (r.doc_type !== curGroup) {
-        if (curGroup !== null) opts += '</optgroup>';
-        opts += `<optgroup label="${doc}">`;
-        curGroup = r.doc_type;
-      }
-      opts += `<option value="${i}"${i === activeRevIdx ? ' selected' : ''}>${doc} — ${esc(r.partner)}</option>`;
-    });
-    if (curGroup !== null) opts += '</optgroup>';
-    selHtml = `<div class="rev-sel"><label class="lbl" for="revSel">Review</label><select id="revSel">${opts}</select></div>`;
+    const cur = reviews[activeRevIdx];
+    const docs     = [...new Set(reviews.map(r => r.doc_type))];
+    const partners = [...new Set(reviews.map(r => r.partner))];
+    const docOpts = docs.map(dt =>
+      `<option value="${esc(dt)}"${dt === cur.doc_type ? ' selected' : ''}>${esc(DOC_LABELS[dt] || dt)}</option>`
+    ).join('');
+    const pOpts = partners.map(p =>
+      `<option value="${esc(p)}"${p === cur.partner ? ' selected' : ''}>${esc(p)}</option>`
+    ).join('');
+    selHtml = `<div class="rev-sel">
+      <div class="rev-field"><label class="lbl" for="revDoc">Document</label><select id="revDoc">${docOpts}</select></div>
+      <div class="rev-field"><label class="lbl" for="revPartner">Partner</label><select id="revPartner">${pOpts}</select></div>
+    </div>`;
   }
 
   el.innerHTML = selHtml + reviewCardHtml(reviews[activeRevIdx]);
 
-  const selEl = document.getElementById('revSel');
-  if (selEl) selEl.addEventListener('change', e => { activeRevIdx = +e.target.value; renderReviews(); });
+  const docEl  = document.getElementById('revDoc');
+  const partEl = document.getElementById('revPartner');
+  function pickReview() {
+    const idx = reviews.findIndex(r => r.doc_type === docEl.value && r.partner === partEl.value);
+    if (idx >= 0) { activeRevIdx = idx; renderReviews(); }
+  }
+  if (docEl)  docEl.addEventListener('change',  pickReview);
+  if (partEl) partEl.addEventListener('change', pickReview);
 }
 
 function reviewCardHtml(r) {
