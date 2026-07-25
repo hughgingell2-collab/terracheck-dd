@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -118,12 +118,7 @@ body{font-family:var(--font);background:var(--white);color:var(--text);
 .prec-none{color:var(--text3);font-size:11px}
 
 /* ── REVIEW SELECTOR ── */
-.rev-sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
-.rev-btn{padding:5px 14px;border:1px solid var(--border-md);border-radius:4px;
-  background:var(--white);color:var(--text2);font-size:12px;
-  font-family:var(--font);cursor:pointer;transition:all .1s}
-.rev-btn:hover{border-color:var(--text);color:var(--text)}
-.rev-btn.on{border-color:var(--text);color:var(--text);background:var(--subtle)}
+.rev-sel{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 
 /* ── SELECTS ── */
 select{background:var(--white);border:1px solid var(--border-md);
@@ -748,19 +743,26 @@ function renderReviews() {
     return;
   }
 
-  const sel = reviews.length > 1
-    ? `<div class="rev-sel">${reviews.map((r,i) =>
-        `<button class="rev-btn${i===activeRevIdx?' on':''}" data-i="${i}">
-          ${esc(DOC_LABELS[r.doc_type]||r.doc_type)} — ${esc(r.partner)}
-        </button>`).join('')}</div>`
-    : '';
+  let selHtml = '';
+  if (reviews.length > 1) {
+    let curGroup = null, opts = '';
+    reviews.forEach((r, i) => {
+      const doc = esc(DOC_LABELS[r.doc_type] || r.doc_type);
+      if (r.doc_type !== curGroup) {
+        if (curGroup !== null) opts += '</optgroup>';
+        opts += `<optgroup label="${doc}">`;
+        curGroup = r.doc_type;
+      }
+      opts += `<option value="${i}"${i === activeRevIdx ? ' selected' : ''}>${doc} — ${esc(r.partner)}</option>`;
+    });
+    if (curGroup !== null) opts += '</optgroup>';
+    selHtml = `<div class="rev-sel"><label class="lbl" for="revSel">Review</label><select id="revSel">${opts}</select></div>`;
+  }
 
-  el.innerHTML = sel + reviewCardHtml(reviews[activeRevIdx]);
+  el.innerHTML = selHtml + reviewCardHtml(reviews[activeRevIdx]);
 
-  el.querySelectorAll('.rev-btn').forEach(b => b.addEventListener('click', () => {
-    activeRevIdx = +b.dataset.i;
-    renderReviews();
-  }));
+  const selEl = document.getElementById('revSel');
+  if (selEl) selEl.addEventListener('change', e => { activeRevIdx = +e.target.value; renderReviews(); });
 }
 
 function reviewCardHtml(r) {
