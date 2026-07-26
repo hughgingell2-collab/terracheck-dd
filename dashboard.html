@@ -243,6 +243,10 @@ select:focus{outline:2px solid var(--border-md);outline-offset:1px}
 .memhub-pill{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;
   border:1px solid var(--border-md);border-radius:9px;
   font-size:9px;color:var(--text3);font-variant:small-caps;letter-spacing:.04em}
+.memo-btn{font-size:10.5px;padding:4px 11px;border:1px solid var(--border-md);
+  border-radius:3px;background:var(--white);color:var(--text2);cursor:pointer;
+  font-family:var(--font);white-space:nowrap;letter-spacing:.01em;margin-left:4px}
+.memo-btn:hover{background:var(--subtle);color:var(--text);border-color:var(--text3)}
 
 /* record table */
 .rtbl{width:100%;border-collapse:collapse}
@@ -798,6 +802,7 @@ function renderReviews() {
 
   el.innerHTML = selHtml + reviewCardHtml(reviews[activeRevIdx]);
   requestAnimationFrame(updateStickyOffsets);
+  document.getElementById('memoBtn')?.addEventListener('click', () => generateMemo(reviews[activeRevIdx]));
 
   const docEl  = document.getElementById('revDoc');
   const partEl = document.getElementById('revPartner');
@@ -839,6 +844,7 @@ function reviewCardHtml(r) {
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
         ${sumChips(findings)}
+        <button class="memo-btn" id="memoBtn">Download memorandum</button>
       </div>
     </div>
     ${findings.length ? `
@@ -853,6 +859,100 @@ function reviewCardHtml(r) {
       <tbody>${rows}</tbody>
     </table>` : '<div class="empty-state" style="padding:20px">No findings.</div>'}
   </div>`;
+}
+
+function generateMemo(r) {
+  const findings = r.findings || [];
+  const bySev = sev => findings.filter(f => (f.severity||'').toUpperCase() === sev);
+  const reds   = bySev('RED');
+  const ambers = bySev('AMBER');
+  const greens = bySev('GREEN');
+  const total  = findings.length;
+  const docLabel = DOC_LABELS[r.doc_type] || r.doc_type;
+
+  const findingBlock = f => {
+    const prec = derivePrecedent(f);
+    return `<div class="finding">
+      <div class="finding-ref">${esc(f.ref)}</div>
+      <div class="finding-issue">${esc(f.issue)}</div>
+      <div class="finding-rationale">${esc(f.rationale)}</div>
+      ${prec ? `<div class="finding-precedent"><strong>Precedent:</strong> ${esc(prec)}</div>` : ''}
+    </div>`;
+  };
+
+  const section = (cls, label, color, items) => items.length ? `
+    <div class="section ${cls}">
+      <div class="section-hdr">${label}&ensp;(${items.length})</div>
+      ${items.map(findingBlock).join('')}
+    </div>` : '';
+
+  const parts = [];
+  if (reds.length)   parts.push(`${reds.length} RED`);
+  if (ambers.length) parts.push(`${ambers.length} AMBER`);
+  if (greens.length) parts.push(`${greens.length} GREEN`);
+  const summaryLine = `This review identified ${total} finding${total !== 1 ? 's' : ''}: ${parts.join(', ')}.`;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Due Diligence Memorandum — ${esc(r.matter)}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Georgia,'Times New Roman',serif;font-size:13pt;line-height:1.65;
+    max-width:760px;margin:40px auto;padding:0 36px 60px;color:#111}
+  .print-hint{background:#fffbf5;border:1px solid #d97706;border-radius:4px;
+    padding:9px 14px;font-size:10pt;font-family:system-ui,sans-serif;
+    margin-bottom:28px;color:#78350f}
+  @media print{.print-hint{display:none}}
+  h1{font-size:15pt;font-weight:normal;letter-spacing:.02em;border-bottom:2px solid #111;
+    padding-bottom:10px;margin-bottom:20px;font-family:Georgia,serif}
+  table.memo-hdr{border-collapse:collapse;margin-bottom:28px;font-size:12pt;width:100%}
+  table.memo-hdr td{padding:4px 0;vertical-align:top}
+  table.memo-hdr td:first-child{font-variant:small-caps;letter-spacing:.06em;
+    color:#555;width:70px;font-size:10.5pt}
+  .exec-summary{background:#f5f5f5;border-left:3px solid #111;
+    padding:10px 16px;margin-bottom:32px;font-size:12pt}
+  .section{margin-bottom:36px}
+  .section-hdr{font-variant:small-caps;letter-spacing:.07em;font-size:11pt;
+    font-weight:bold;margin-bottom:18px;padding-bottom:7px;border-bottom:2px solid currentColor}
+  .section-red   .section-hdr{color:#9b1c1c;border-color:#fca5a5}
+  .section-amber .section-hdr{color:#78350f;border-color:#d97706}
+  .section-green .section-hdr{color:#064e3b;border-color:#6ee7b7}
+  .finding{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #e5e7eb}
+  .finding:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .finding-ref{font-family:system-ui,sans-serif;font-size:9.5pt;font-weight:700;
+    letter-spacing:.05em;color:#6b7280;margin-bottom:5px;text-transform:uppercase}
+  .finding-issue{font-weight:bold;font-size:12.5pt;margin-bottom:10px;line-height:1.4}
+  .finding-rationale{font-size:12pt;color:#374151;margin-bottom:6px}
+  .finding-precedent{font-size:11pt;font-style:italic;color:#4b5563;
+    margin-top:8px;padding-top:8px;border-top:1px dashed #e5e7eb}
+  .footer{margin-top:48px;padding-top:14px;border-top:1px solid #e5e7eb;
+    font-size:9pt;font-family:system-ui,sans-serif;color:#9ca3af;text-align:center}
+</style>
+</head>
+<body>
+<div class="print-hint">&#x1F4BE;&ensp;To save as PDF: File &rarr; Print &rarr; Save as PDF (or Ctrl+P / Cmd+P)</div>
+<h1>Due Diligence Memorandum</h1>
+<table class="memo-hdr">
+  <tr><td>To</td><td>${esc(r.client)}</td></tr>
+  <tr><td>From</td><td>${esc(r.partner)}</td></tr>
+  <tr><td>Re</td><td>${esc(r.matter)} &mdash; ${esc(docLabel)}</td></tr>
+  <tr><td>Date</td><td>${esc(r.date)}</td></tr>
+</table>
+<div class="exec-summary">${summaryLine}</div>
+${section('section-red',   'Red — Must Resolve Before Close', '#9b1c1c', reds)}
+${section('section-amber', 'Amber — Material Risk, Negotiate', '#78350f', ambers)}
+${section('section-green', 'Green — Noted, Acceptable',        '#064e3b', greens)}
+<div class="footer">Generated by TerraCheck DD &mdash; memory via XTrace MemHub.</div>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank');
+  if (!w) { alert('Pop-up blocked — please allow pop-ups for this page and try again.'); return; }
+  w.document.write(html);
+  w.document.close();
 }
 
 // ── COMPARE VIEW ──────────────────────────────────────────────────────────────
